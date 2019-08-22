@@ -156,35 +156,34 @@ def commandMonth(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text','entities', 'caption_entities', 'audio', 'document', 'photo', 'sticker', 'video', 'video_note', 'voice', 'caption', 'contact', 'location', 'venue'])
 def msgHandler(message):
-    if str(message.chat.id) == '-333347431' or '-236187097':
-        conn = psycopg2.connect(dbname=dbName, user=dbUser, password=dbPass, host=dbAddr)
-        cursor = conn.cursor()
-        username = ''
-        dict = message.json['from']
-        day = datetime.now(pytz.timezone('Europe/Moscow')).strftime('%Y-%m-%d')
+    conn = psycopg2.connect(dbname=dbName, user=dbUser, password=dbPass, host=dbAddr)
+    cursor = conn.cursor()
+    username = ''
+    dict = message.json['from']
+    day = datetime.now(pytz.timezone('Europe/Moscow')).strftime('%Y-%m-%d')
 
-        if 'first_name' in dict:
-            username = username + dict['first_name']
-            if 'last_name' in dict:
-                username = username + " " + dict['last_name']
-        elif 'last_name' in dict:
-            username = username + dict['last_name']
-        else:
-            username = username + dict['username']
+    if 'first_name' in dict:
+        username = username + dict['first_name']
+        if 'last_name' in dict:
+            username = username + " " + dict['last_name']
+    elif 'last_name' in dict:
+        username = username + dict['last_name']
+    else:
+        username = username + dict['username']
 
-        cursor.execute("SELECT messages FROM activity WHERE username = %s AND day = %s;", (username, day,))
-        records = cursor.fetchall()
+    cursor.execute("SELECT messages FROM activity WHERE username = %s AND day = %s;", (username, day,))
+    records = cursor.fetchall()
 
-        if records != []:
-            cursor.execute("UPDATE activity SET messages = messages + 1 WHERE username = %s AND day = %s;",
-                           (username, day,))
-            conn.commit()
-        else:
-            cursor.execute("INSERT INTO activity VALUES (%s, %s, 1);", (username, day,))
-            conn.commit()
+    if records != []:
+        cursor.execute("UPDATE activity SET messages = messages + 1 WHERE username = %s AND day = %s;",
+                       (username, day,))
+        conn.commit()
+    else:
+        cursor.execute("INSERT INTO activity VALUES (%s, %s, 1);", (username, day,))
+        conn.commit()
 
-        cursor.close()
-        conn.close()
+    cursor.close()
+    conn.close()
 
 
 token = 'TELEGRAM_TOKEN'
