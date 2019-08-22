@@ -187,7 +187,7 @@ def msgHandler(message):
         conn.close()
 
 
-token = 'TELEGRAN TOKEN'
+token = 'TELEGRAM_TOKEN'
 proxy = 'socks5://IP_ADDRESS:PORT'
 dbAddr = 'db.examle.com'
 dbName = 'db_name'
