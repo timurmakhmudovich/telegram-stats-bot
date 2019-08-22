@@ -159,17 +159,17 @@ def msgHandler(message):
     conn = psycopg2.connect(dbname=dbName, user=dbUser, password=dbPass, host=dbAddr)
     cursor = conn.cursor()
     username = ''
-    dict = message.json['from']
+    d = message.json['from']
     day = datetime.now(pytz.timezone('Europe/Moscow')).strftime('%Y-%m-%d')
 
-    if 'first_name' in dict:
-        username = username + dict['first_name']
-        if 'last_name' in dict:
-            username = username + " " + dict['last_name']
-    elif 'last_name' in dict:
-        username = username + dict['last_name']
+    if 'first_name' in d:
+        username = username + d['first_name']
+        if 'last_name' in d:
+            username = username + " " + d['last_name']
+    elif 'last_name' in d:
+        username = username + d['last_name']
     else:
-        username = username + dict['username']
+        username = username + d['username']
 
     cursor.execute("SELECT messages FROM activity WHERE username = %s AND day = %s;", (username, day,))
     records = cursor.fetchall()
